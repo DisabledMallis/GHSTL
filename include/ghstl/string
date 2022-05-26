@@ -1,0 +1,87 @@
+#pragma once
+
+#ifndef GHSTL_STRICT
+#include <string>
+#endif
+
+namespace ghstl {
+	template<typename T>
+	struct basic_string {
+	private:
+		static constexpr size_t _BUF_SIZE = 16 / sizeof(T) < 1 ? 1 : 16 / sizeof(T);
+	public:
+		union {
+			T* ptr;
+			T buf[_BUF_SIZE];
+		} box = 0;
+		static_assert(sizeof(box) == _BUF_SIZE, "basic_string::box is the wrong size!");
+		size_t length = 0;
+		size_t res = 0;
+	public:
+		template<size_t _LEN> basic_string(const T(&ptr)[_LEN]) {
+			this->assign(ptr, _LEN);
+		}
+		basic_string(const T* ptr, size_t len) {
+			this->assign(ptr, len);
+		}
+		basic_string(basic_string&& right) {
+			this->assign(right);
+		}
+		constexpr basic_string<T>& assign(basic_string<T>& right) {
+			this->assign(right.c_str(), right.length());
+		}
+		constexpr basic_string<T>& assign(const T* ptr, size_t len) {
+			if (this->res >= _BUF_SIZE) {
+				if (this->box.ptr != nullptr) {
+					free(this->box.ptr);
+				}
+			}
+
+			this->length = len;
+
+			if (len >= _BUF_SIZE) {
+				size_t allocSize = (sizeof(T) * len) + 1; //Add a byte for the null terminator
+				T* boxPtr = (T*)malloc(allocSize);
+				if (!boxPtr) {
+					throw std::exception("Failed to allocate ptr for string buffer");
+				}
+				memcpy(boxPtr, ptr, len);
+				this->box.ptr = boxPtr;
+				this->res = allocSize;
+			}
+			else {
+				memcpy(this->box.buf, ptr, len);
+				this->res = _BUF_SIZE - 1; //All strings are null terminated, so we need to leave a byte for that
+			}
+			return *this;
+		}
+		constexpr const T* const ptr() {
+			if (this->count() > _BUF_SIZE) {
+				return this->box.ptr;
+			}
+			else {
+				return this->box.buf;
+			}
+		}
+		constexpr const T* const c_str() {
+			return this->ptr();
+		}
+#ifndef GHSTL_STRICT
+		constexpr const std::basic_string<T> cpp_str() {
+			return std::basic_string<T>(this->ptr(), this->count());
+		}
+#endif
+		constexpr const size_t count() {
+			return this->length;
+		}
+		constexpr const size_t size() {
+			return this->length * sizeof(T);
+		}
+	};
+	using string = basic_string<char>;
+	using wstring = basic_string<wchar_t>;
+	static_assert(sizeof(string) == 0x20, "ghstl::string is the wrong size!");
+	static_assert(offsetof(string, box) == 0x0, "ghstl::string::box is misaligned!");
+	static_assert(offsetof(string, length) == 0x10, "ghstl::string::length is misaligned!");
+	static_assert(offsetof(string, res) == 0x18, "ghstl::string::res is misaligned!");
+};
