@@ -13,7 +13,7 @@ namespace ghstl {
 		union {
 			T* ptr;
 			T buf[_BUF_SIZE];
-		} box = 0;
+		} box;
 		static_assert(sizeof(box) == _BUF_SIZE, "basic_string::box is the wrong size!");
 		size_t length = 0;
 		size_t res = 0;
@@ -39,7 +39,7 @@ namespace ghstl {
 
 			this->length = len;
 
-			if (len >= _BUF_SIZE) {
+			if (len > _BUF_SIZE) {
 				size_t allocSize = (sizeof(T) * len) + 1; //Add a byte for the null terminator
 				T* boxPtr = (T*)malloc(allocSize);
 				if (!boxPtr) {

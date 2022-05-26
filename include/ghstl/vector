@@ -31,14 +31,12 @@ namespace ghstl {
 			//Double the element count, and multiply that by the size of a pointer
 			//Leaves double the room before needing to realloc
 			long long b_size = count() * sizeof(T);
-			long long newAllocSize = (count() * sizeof(T)) * 2;
+			long long newAllocSize = b_size * 2;
 			T* newFirst = (T*)malloc(newAllocSize);
 			memset(newFirst, 0, newAllocSize);
 
 			//Copy old objects
-			T* contentBegin = newFirst + 16;
-			long long contentSize = newAllocSize - 16;
-			memcpy_s(contentBegin, contentSize, firstAddr, b_size);
+			memcpy_s(newFirst, newAllocSize, firstAddr, b_size);
 
 			*(size_t*)(contentBegin - sizeof(T*)) = (size_t)newFirst;
 
