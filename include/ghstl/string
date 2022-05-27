@@ -77,6 +77,9 @@ namespace ghstl {
 			return this->ptr();
 		}
 #ifndef GHSTL_STRICT
+		void operator=(std::basic_string<T> rhs) {
+			this->assign(rhs.c_str(), rhs.length());
+		}
 		constexpr const std::basic_string<T> cpp_str() {
 			return std::basic_string<T>(this->ptr(), this->count());
 		}
