@@ -80,14 +80,8 @@ namespace ghstl {
 		void operator=(ghstl::basic_string<T>& rhs) {
 			this->assign(rhs.c_str(), rhs.length());
 		}
-		void operator=(ghstl::basic_string<T> rhs) {
-			this->assign(rhs.c_str(), rhs.length());
-		}
 #ifndef GHSTL_STRICT
 		void operator=(std::basic_string<T>& rhs) {
-			this->assign(rhs.c_str(), rhs.length());
-		}
-		void operator=(std::basic_string<T> rhs) {
 			this->assign(rhs.c_str(), rhs.length());
 		}
 		constexpr const std::basic_string<T> cpp_str() {
