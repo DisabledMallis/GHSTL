@@ -21,6 +21,11 @@ namespace ghstl {
 		basic_string() {
 			this->assign("");
 		}
+#ifndef GHSTL_STRICT
+		basic_string(std::basic_string<T> stdstr) {
+			this->assign(stdstr.c_str(), stdstr.length());
+		}
+#endif
 		template<size_t _LEN> basic_string(const T(&ptr)[_LEN]) {
 			this->assign(ptr, _LEN);
 		}
@@ -43,16 +48,18 @@ namespace ghstl {
 			this->length = len;
 
 			if (len > _BUF_SIZE) {
-				size_t allocSize = (sizeof(T) * len) + 1; //Add a byte for the null terminator
+				size_t allocSize = (sizeof(T) * len) + sizeof(T); //Add a char for the null terminator
 				T* boxPtr = (T*)malloc(allocSize);
 				if (!boxPtr) {
 					throw std::exception("Failed to allocate ptr for string buffer");
 				}
+				memset(boxPtr, 0, allocSize);
 				memcpy(boxPtr, ptr, len);
 				this->box.ptr = boxPtr;
 				this->res = allocSize;
 			}
 			else {
+				memset(this->box.buf, 0, len * sizeof(T));
 				memcpy(this->box.buf, ptr, len);
 				this->res = _BUF_SIZE - 1; //All strings are null terminated, so we need to leave a byte for that
 			}
