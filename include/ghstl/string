@@ -19,7 +19,7 @@ namespace ghstl {
 		size_t res = 0;
 	public:
 		basic_string() {
-			this->assign("");
+			this->assign("", 1);
 		}
 #ifndef GHSTL_STRICT
 		basic_string(std::basic_string<T> stdstr) {
