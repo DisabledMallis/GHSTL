@@ -77,10 +77,16 @@ namespace ghstl {
 		constexpr const T* const c_str() {
 			return this->ptr();
 		}
+		void operator=(ghstl::basic_string<T>& rhs) {
+			this->assign(rhs.c_str(), rhs.length());
+		}
 		void operator=(ghstl::basic_string<T> rhs) {
 			this->assign(rhs.c_str(), rhs.length());
 		}
 #ifndef GHSTL_STRICT
+		void operator=(std::basic_string<T>& rhs) {
+			this->assign(rhs.c_str(), rhs.length());
+		}
 		void operator=(std::basic_string<T> rhs) {
 			this->assign(rhs.c_str(), rhs.length());
 		}
