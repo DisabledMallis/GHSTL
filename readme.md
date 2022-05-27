@@ -14,5 +14,8 @@ Here is a list of everything that completed, in progress, or incomplete
 ✅ - std::string
 🔄 - This list
 🔄 - std::vector
+🔄 - std::initializer_list
+🔄 - std::shared_ptr
 ❌ - std::map
+❌ - std::unique_ptr
 ```

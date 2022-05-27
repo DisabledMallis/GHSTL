@@ -1,14 +1,41 @@
 #pragma once
 
+#include "initializer_list"
+
 namespace ghstl {
 	template <typename T>
 	class vector {
-		T* firstAddr;
-		T* lastAddr;
-		void* nextRealign;
+		T* firstAddr = nullptr;
+		T* lastAddr = nullptr;
+		void* nextRealign = nullptr;
 	public:
+		vector() {};
+		template<typename T, typename... Ty>
+		vector(T next, Ty... args) {
+			push_back(next, args...);
+		};
+		vector(const size_t count) {
+			firstAddr = allocate_for(count);
+			lastAddr = firstAddr;
+			nextRealign = firstAddr + size_bytes(count);
+		}
+		vector(initializer_list<T> initList) {
+			this->firstAddr = initList.first;
+			this->lastAddr = initList.last;
+		}
 		size_t count() {
+			if (firstAddr == nullptr)
+				return 0;
 			return (((size_t)lastAddr) - ((size_t)firstAddr)) / sizeof(T);
+		}
+		size_t size() {
+			return count();
+		}
+		size_t size_bytes() {
+			return size_bytes(count());
+		}
+		size_t size_bytes(size_t count) {
+			return count * sizeof(T);
 		}
 		T* begin() {
 			return firstAddr;
@@ -19,31 +46,43 @@ namespace ghstl {
 		void clear() {
 			lastAddr = firstAddr;
 		}
-		T* operator[](long long pos) {
-			return this->at(pos);
-		}
 		T* at(long long pos) {
 			long long ptrOffset = pos * sizeof(T);
 			T* item = (T*)(((long long)firstAddr) + ptrOffset);
 			return item;
 		}
+		T* operator[](long long pos) {
+			return this->at(pos);
+		}
+		T* allocate_for(size_t count) {
+			return (T*)malloc(count * sizeof(T));
+		}
 		void realign() {
 			//Double the element count, and multiply that by the size of a pointer
 			//Leaves double the room before needing to realloc
-			long long b_size = count() * sizeof(T);
-			long long newAllocSize = b_size * 2;
-			T* newFirst = (T*)malloc(newAllocSize);
-			memset(newFirst, 0, newAllocSize);
+			long long oldSize = size_bytes();
+			long long newCount = (count()*2) + 1;
+			long long newSize = newCount * sizeof(T);
+			T* newFirst = allocate_for(newCount);
+			memset(newFirst, 0, newCount);
 
 			//Copy old objects
-			memcpy_s(newFirst, newAllocSize, firstAddr, b_size);
-
-			*(size_t*)(contentBegin - sizeof(T*)) = (size_t)newFirst;
+			memcpy_s(newFirst, newSize, firstAddr, oldSize);
 
 			//set new vals
-			firstAddr = contentBegin;
-			lastAddr = contentBegin + b_size;
-			nextRealign = newFirst + newAllocSize;
+			firstAddr = newFirst;
+			lastAddr = newFirst + oldSize;
+			nextRealign = newFirst + newSize;
+		}
+		template<typename T, typename... Ty>
+		void push_back(T val, Ty... args) {
+			if (lastAddr + sizeof(T) >= nextRealign) {
+				realign();
+			}
+			*lastAddr = val;
+			lastAddr += sizeof(T);
+
+			push_back(args...);
 		}
 		void push_back(T val) {
 			if (lastAddr + sizeof(T) >= nextRealign) {
@@ -52,6 +91,7 @@ namespace ghstl {
 			*lastAddr = val;
 			lastAddr += sizeof(T);
 		}
+		void push_back() {};
 		bool remove(long long index) {
 			long long count = this->count();
 			if (index >= count) {

@@ -1,0 +1,29 @@
+#pragma once
+
+namespace ghstl {
+	template<typename T>
+	class initializer_list {
+	public:
+		const T* first = nullptr;
+		const T* last = nullptr;
+	public:
+        constexpr initializer_list() {}
+        constexpr initializer_list(const T* begin, const T* end) noexcept : first(begin), last(end) {};
+
+        [[nodiscard]] constexpr const T* begin() const {
+            return first;
+        }
+
+        [[nodiscard]] constexpr const T* end() const {
+            return last;
+        }
+
+        [[nodiscard]] constexpr size_t size() const {
+            return static_cast<size_t>(last - first);
+        }
+
+        [[nodiscard]] constexpr size_t count() const {
+            return size() / sizeof(T);
+        }
+	};
+};

@@ -1,0 +1,26 @@
+#pragma once
+
+namespace ghstl {
+	template<typename T>
+	class shared_ptr {
+		T* ptr;
+		struct ref_count_base {
+			unsigned long uses = 0;
+			unsigned long weaks = 0;
+			virtual ~ref_count_base() {};
+			ref_count_base() {
+				this->uses++;
+				this->weaks++;
+			}
+		}* refc;
+	public:
+		shared_ptr() {}
+		shared_ptr(T* innerPtr) {
+			this->ptr = innerPtr;
+			this->refc = new ref_count_base();
+		}
+		T* get() {
+			return this->ptr;
+		}
+	};
+};
