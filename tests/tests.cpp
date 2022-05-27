@@ -26,6 +26,10 @@ int main() {
 	ghstl::string ghstl_perfect_str = "I fit perfectly";
 	std::cout << "&ghstl_perfect_str: " << &ghstl_perfect_str << std::endl;
 
+	ghstl::string from_str = std::to_string(3);
+	std::string std_ref_str = std::string("Hello!");
+	ghstl::string from_lstr = std_ref_str;
+
 	std::vector<uint32_t> std_empty_vec;
 	std::cout << "&std_empty_vec: " << &std_empty_vec << std::endl;
 	std::vector<uint32_t> std_counter_vec = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
