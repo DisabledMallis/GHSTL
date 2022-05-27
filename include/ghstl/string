@@ -15,7 +15,7 @@ namespace ghstl {
 			T buf[_BUF_SIZE];
 		} box;
 		static_assert(sizeof(box) == _BUF_SIZE, "basic_string::box is the wrong size!");
-		size_t length = 0;
+		size_t count = 0;
 		size_t res = 0;
 	public:
 		basic_string() {
@@ -45,7 +45,7 @@ namespace ghstl {
 				}
 			}
 
-			this->length = len;
+			this->count = len;
 
 			if (len > _BUF_SIZE) {
 				size_t allocSize = (sizeof(T) * len) + sizeof(T); //Add a char for the null terminator
@@ -88,10 +88,10 @@ namespace ghstl {
 		}
 #endif
 		constexpr const size_t length() {
-			return this->length;
+			return this->count;
 		}
 		constexpr const size_t size() {
-			return this->length * sizeof(T);
+			return this->length() * sizeof(T);
 		}
 	};
 	using string = basic_string<char>;
