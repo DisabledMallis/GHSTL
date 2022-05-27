@@ -18,6 +18,9 @@ namespace ghstl {
 		size_t length = 0;
 		size_t res = 0;
 	public:
+		basic_string() {
+			this->assign("");
+		}
 		template<size_t _LEN> basic_string(const T(&ptr)[_LEN]) {
 			this->assign(ptr, _LEN);
 		}
