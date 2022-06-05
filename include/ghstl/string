@@ -39,7 +39,7 @@ namespace ghstl {
 		~basic_string() {
 			if (this->res >= _BUF_SIZE) {
 				if (this->box.ptr != nullptr) {
-					free(this->box.ptr);
+					::operator delete(this->box.ptr);
 				}
 			}
 		}
@@ -52,17 +52,11 @@ namespace ghstl {
 			return this->assign(right.c_str(), right.length());
 		}
 		constexpr basic_string<T>& assign(const T* ptr, size_t len) {
-			if (this->res >= _BUF_SIZE) {
-				if (this->box.ptr != nullptr) {
-					free(this->box.ptr);
-				}
-			}
-
 			this->count = len;
 
 			if (len > _BUF_SIZE) {
 				size_t allocSize = (sizeof(T) * len) + sizeof(T); //Add a char for the null terminator
-				T* boxPtr = (T*)malloc(allocSize);
+				T* boxPtr = (T*)::operator new(allocSize);
 				if (!boxPtr) {
 					throw std::exception("Failed to allocate ptr for string buffer");
 				}
