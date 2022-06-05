@@ -24,7 +24,7 @@ namespace ghstl {
 		}
 #ifndef GHSTL_STRICT
 		basic_string(std::basic_string<T> stdstr) {
-			this->assign(stdstr.c_str(), stdstr.length());
+			this->assign(stdstr);
 		}
 #endif
 		template<size_t _LEN> basic_string(const T(&ptr)[_LEN]) {
@@ -36,8 +36,13 @@ namespace ghstl {
 		basic_string(basic_string&& right) {
 			this->assign(right);
 		}
+#ifndef GHSTL_STRICT
+		constexpr basic_string<T>& assign(std::basic_string<T> stdstr) {
+			return this->assign(stdstr.c_str(), stdstr.length());
+		}
+#endif
 		constexpr basic_string<T>& assign(basic_string<T>& right) {
-			this->assign(right.c_str(), right.length());
+			return this->assign(right.c_str(), right.length());
 		}
 		constexpr basic_string<T>& assign(const T* ptr, size_t len) {
 			if (this->res >= _BUF_SIZE) {

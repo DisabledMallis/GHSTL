@@ -26,6 +26,9 @@ int main() {
 	ghstl::string ghstl_perfect_str = "I fit perfectly";
 	std::cout << "&ghstl_perfect_str: " << &ghstl_perfect_str << std::endl;
 
+	ghstl::string* testAssign = new ghstl::string();
+	testAssign->assign(std_short_str);
+
 	ghstl::string from_str = std::to_string(3);
 	std::string std_ref_str = std::string("Hello!");
 	ghstl::string from_lstr = std_ref_str;
