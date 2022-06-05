@@ -36,6 +36,13 @@ namespace ghstl {
 		basic_string(basic_string&& right) {
 			this->assign(right);
 		}
+		~basic_string() {
+			if (this->res >= _BUF_SIZE) {
+				if (this->box.ptr != nullptr) {
+					free(this->box.ptr);
+				}
+			}
+		}
 #ifndef GHSTL_STRICT
 		constexpr basic_string<T>& assign(std::basic_string<T> stdstr) {
 			return this->assign(stdstr.c_str(), stdstr.length());
