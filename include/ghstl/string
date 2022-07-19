@@ -103,9 +103,16 @@ namespace ghstl {
 	};
 	using string = basic_string<char>;
 	using wstring = basic_string<wchar_t>;
+#if _WIN64
 	static_assert(sizeof(string) == 0x20, "ghstl::string is the wrong size!");
 	static_assert(offsetof(string, box) == 0x0, "ghstl::string::box is misaligned!");
 	static_assert(offsetof(string, count) == 0x10, "ghstl::string::length is misaligned!");
 	static_assert(offsetof(string, res) == 0x18, "ghstl::string::res is misaligned!");
+#elif _WIN32
+	static_assert(sizeof(string) == 0x18, "ghstl::string is the wrong size!");
+	static_assert(offsetof(string, box) == 0x0, "ghstl::string::box is misaligned!");
+	static_assert(offsetof(string, count) == 0x10, "ghstl::string::length is misaligned!");
+	static_assert(offsetof(string, res) == 0x14, "ghstl::string::res is misaligned!");
+#endif
 #pragma pack(pop)
 };

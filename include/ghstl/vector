@@ -112,5 +112,9 @@ namespace ghstl {
 			return true;
 		}
 	};
-	static_assert(sizeof(vector<void*>) == 24, "ghstl::vector is misaligned!");
+#if _WIN64
+	static_assert(sizeof(vector<void*>) == 24, "ghstl::vector is the wrong size!");
+#elif _WIN32
+	static_assert(sizeof(vector<void*>) == 12, "ghstl::vector is the wrong size!");
+#endif
 };
