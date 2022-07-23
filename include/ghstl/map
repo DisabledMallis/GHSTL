@@ -1,0 +1,12 @@
+#pragma once
+
+#ifndef GHSTL_STRICT
+#include <map>
+#endif
+
+namespace ghstl {
+    template<typename T>
+    class map {
+
+    };
+}

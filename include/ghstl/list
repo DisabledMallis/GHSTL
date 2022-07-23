@@ -1,0 +1,104 @@
+#pragma once
+
+#ifndef GHSTL_STRICT
+#include <list>
+#endif
+
+namespace ghstl {
+    template<typename T>
+    class list_ptrs {
+    public:
+        list_ptrs<T>* pNext = nullptr;
+        list_ptrs<T>* pPrev = nullptr;
+
+        list_ptrs() {};
+        list_ptrs(list_ptrs<T>* pNext, list_ptrs<T>* pPrev) {
+            this->pNext = pNext;
+            this->pPrev = pPrev;
+        }
+    };
+
+    template<typename T>
+    class list_idx : public list_ptrs<T> {
+    public:
+        T value;
+
+        list_idx(list_ptrs<T>* pNext, list_ptrs<T>* pPrev, T value) : list_ptrs(pNext, pPrev) {
+            this->value = value;
+        }
+    };
+
+    template<typename T>
+    class list {
+        list_ptrs<T>* pItems = nullptr;
+        size_t count = 0;
+
+    public:
+        list() {
+            if (this->pItems == nullptr) {
+                this->pItems = new list_ptrs<T>{ nullptr, nullptr };
+                this->pItems->pNext = this->pItems;
+                this->pItems->pPrev = this->pItems;
+            }
+        }
+        template<typename T, typename... Ty>
+        list(T next, Ty... args) : list() {
+            push_back(next, args...);
+        }
+        template<typename... Ty>
+        void push_back(T value, Ty... args) {
+            //Get the last value
+            list_ptrs<T>* oldLast = this->_last();
+            //Create a new last value, set its next to our beginning, and set its last to our old end
+            //also store the value... kinda important
+            list_idx<T>* newLast = new list_idx<T>{ this->pItems, oldLast, value };
+            //Set the old last next value to the new last
+            oldLast->pNext = newLast;
+            //Set the start to point to our new last
+            this->pItems->pPrev = newLast;
+            //Increment the count
+            this->count++;
+            //Add the remaining params
+            push_back(args...);
+        }
+        void push_back() {}
+        //The director holds prev/next values, but does not hold one itself
+        //it is the entrypoint into the list
+        list_ptrs<T>* _director() {
+            return this->pItems;
+        }
+        list_ptrs<T>* _first() {
+            return this->pItems->pNext;
+        }
+        list_ptrs<T>* _last() {
+            if (this->pItems == nullptr) {
+                return this->pItems;
+            }
+            list_ptrs<T>* last = this->pItems;
+            while (last->pNext != this->pItems) {
+                if (last == nullptr) {
+                    return this->pItems;
+                }
+                if (last->pNext == nullptr) {
+                    last->pNext = this->pItems;
+                    return last;
+                }
+                last = last->pNext;
+            }
+            return last;
+        }
+        T operator[](size_t idx) {
+            list_ptrs<T>* pNext = this->pItems->pNext;
+            for (size_t i = 1; i < idx+1; i++) {
+                if (i == idx) {
+                    //Sure, 2 indexes will have the same value, but theyre an overflow anyway
+                    if (pNext == _director()) {
+                        return pNext->pNext->value;
+                    }
+                    return pNext->value;
+                }
+                pNext = pNext->pNext;
+            }
+        }
+    };
+}

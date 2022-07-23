@@ -1,11 +1,15 @@
 #include <iostream>
 
+#include <list>
+#include <map>
 #include <string>
 #include <vector>
 
+#include <ghstl/list>
+#include <ghstl/map>
+#include <ghstl/memory>
 #include <ghstl/string>
 #include <ghstl/vector>
-#include <ghstl/memory>
 
 #ifdef _DEBUG
 #pragma message("GHSTL cannot be tested against Release MSVC STL when MSVC STL is compiled in Debug")
@@ -52,6 +56,27 @@ int main() {
 
 	ghstl::shared_ptr<uint64_t> ghstl_num_ptr = ghstl::shared_ptr<uint64_t>(new uint64_t(0xDEADBEEF));
 	std::cout << "&ghstl_num_ptr: " << &ghstl_num_ptr << std::endl;
+
+	std::map<std::string, int> std_map_empty;
+	std::cout << "&std_map_empty: " << &std_map_empty << std::endl;
+	std::map<std::string, int> std_map_count = {
+		{ "one", 1 },
+		{ "two", 2 },
+		{ "three", 3 }
+	};
+	std::cout << "&std_map_count: " << &std_map_count << std::endl;
+
+	std::list<uint32_t> std_list_empty;
+	std::cout << "&std_list_empty: " << &std_list_empty << std::endl;
+	std::list<uint32_t> std_list_count = { 0, 1, 2, 3, 4, 5 };
+	std::cout << "&std_list_count: " << &std_list_count << std::endl;
+	std::cout << "std_list_count: " << *(void**)&std_list_count << std::endl;
+
+	ghstl::list<uint32_t> ghstl_list_empty;
+	std::cout << "&std_list_empty: " << &ghstl_list_empty << std::endl;
+	ghstl::list<uint32_t> ghstl_list_count = { 0, 1, 2, 3, 4, 5 };
+	std::cout << "&std_list_count: " << &ghstl_list_count << std::endl;
+	std::cout << "std_list_count: " << *(void**)&ghstl_list_count << std::endl;
 
 	std::cin.get();
 }
