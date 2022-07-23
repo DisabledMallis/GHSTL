@@ -23,7 +23,7 @@ namespace ghstl {
     public:
         T value;
 
-        list_idx(list_ptrs<T>* pNext, list_ptrs<T>* pPrev, T value) : list_ptrs(pNext, pPrev) {
+        list_idx(list_ptrs<T>* pNext, list_ptrs<T>* pPrev, T value) : list_ptrs<T>(pNext, pPrev) {
             this->value = value;
         }
     };
