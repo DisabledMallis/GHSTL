@@ -33,6 +33,9 @@ namespace ghstl {
 		basic_string(const T* ptr, size_t len) {
 			this->assign(ptr, len);
 		}
+		basic_string(basic_string& right) {
+			this->assign(right);
+		}
 		basic_string(basic_string&& right) {
 			this->assign(right);
 		}
