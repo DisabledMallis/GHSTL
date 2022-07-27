@@ -76,7 +76,7 @@ namespace ghstl {
 			return *this;
 		}
 		constexpr const T* const ptr() {
-			if (this->length() > _BUF_SIZE) {
+			if (this->length() >= _BUF_SIZE) {
 				return this->box.ptr;
 			}
 			else {
