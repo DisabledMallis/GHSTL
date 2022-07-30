@@ -46,13 +46,16 @@ namespace ghstl {
 		void clear() {
 			lastAddr = firstAddr;
 		}
-		T* at(long long pos) {
-			long long ptrOffset = pos * sizeof(T);
-			T* item = (T*)(((long long)firstAddr) + ptrOffset);
+		T* at(size_t pos) {
+			size_t ptrOffset = pos * sizeof(T);
+			T* item = (T*)(((size_t)firstAddr) + ptrOffset);
 			return item;
 		}
-		T* operator[](long long pos) {
-			return this->at(pos);
+		T& operator[](size_t pos) {
+			return *this->at(pos);
+		}
+		T* data() {
+			return firstAddr;
 		}
 		T* allocate_for(size_t count) {
 			return (T*)malloc(count * sizeof(T));
@@ -60,9 +63,9 @@ namespace ghstl {
 		void realign() {
 			//Double the element count, and multiply that by the size of a pointer
 			//Leaves double the room before needing to realloc
-			long long oldSize = size_bytes();
-			long long newCount = (count()*2) + 1;
-			long long newSize = newCount * sizeof(T);
+			size_t oldSize = size_bytes();
+			size_t newCount = (count()*2) + 1;
+			size_t newSize = newCount * sizeof(T);
 			T* newFirst = allocate_for(newCount);
 			memset(newFirst, 0, newCount);
 
