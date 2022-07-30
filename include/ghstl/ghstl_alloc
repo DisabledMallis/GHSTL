@@ -1,0 +1,9 @@
+#pragma once
+
+#ifndef GHSTL_MALLOC
+#define GHSTL_MALLOC(size) ::operator new(size);
+#endif
+
+#ifndef GHSTL_FREE
+#define GHSTL_FREE(ptr) ::operator delete(ptr);
+#endif

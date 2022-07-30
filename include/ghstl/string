@@ -1,5 +1,7 @@
 #pragma once
 
+#include "ghstl_alloc"
+
 #ifndef GHSTL_STRICT
 #include <string>
 #endif
@@ -42,7 +44,7 @@ namespace ghstl {
 		~basic_string() {
 			if (this->res >= _BUF_SIZE) {
 				if (this->box.ptr != nullptr) {
-					::operator delete(this->box.ptr);
+					GHSTL_FREE(this->box.ptr);
 				}
 			}
 		}
@@ -59,7 +61,7 @@ namespace ghstl {
 
 			if (len > _BUF_SIZE) {
 				size_t allocSize = (sizeof(T) * len) + sizeof(T); //Add a char for the null terminator
-				T* boxPtr = (T*)::operator new(allocSize);
+				T* boxPtr = (T*)GHSTL_MALLOC(allocSize);
 				if (!boxPtr) {
 					throw std::exception("Failed to allocate ptr for string buffer");
 				}
