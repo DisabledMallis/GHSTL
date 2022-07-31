@@ -42,7 +42,7 @@ namespace ghstl {
 			this->assign(right);
 		}
 		~basic_string() {
-			if (this->res >= _BUF_SIZE) {
+			if (this->res > _BUF_SIZE) {
 				if (this->box.ptr != nullptr) {
 					GHSTL_FREE(this->box.ptr);
 				}
@@ -71,14 +71,14 @@ namespace ghstl {
 				this->res = allocSize;
 			}
 			else {
-				memset(this->box.buf, 0, len * sizeof(T));
+				memset(this->box.buf, 0, _BUF_SIZE);
 				memcpy(this->box.buf, ptr, len);
 				this->res = _BUF_SIZE - 1; //All strings are null terminated, so we need to leave a byte for that
 			}
 			return *this;
 		}
 		constexpr const T* const ptr() {
-			if (this->res >= _BUF_SIZE) {
+			if (this->res > _BUF_SIZE) {
 				return this->box.ptr;
 			}
 			else {
