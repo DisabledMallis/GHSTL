@@ -59,6 +59,12 @@ namespace ghstl {
 		constexpr basic_string<T>& assign(const T* ptr, size_t len) {
 			this->count = len;
 
+			if (this->res > _BUF_SIZE) {
+				if (this->box.ptr != nullptr) {
+					GHSTL_FREE(this->box.ptr);
+				}
+			}
+
 			if (len > _BUF_SIZE) {
 				size_t allocSize = (sizeof(T) * len) + sizeof(T); //Add a char for the null terminator
 				T* boxPtr = (T*)GHSTL_MALLOC(allocSize);
