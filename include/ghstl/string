@@ -83,7 +83,7 @@ namespace ghstl {
 			}
 			return *this;
 		}
-		constexpr const T* const ptr() {
+		constexpr const T* const ptr() const {
 			if (this->res > _BUF_SIZE) {
 				return this->box.ptr;
 			}
@@ -91,7 +91,7 @@ namespace ghstl {
 				return this->box.buf;
 			}
 		}
-		constexpr const T* const c_str() {
+		constexpr const T* const c_str() const {
 			return this->ptr();
 		}
 		void operator=(ghstl::basic_string<T>& rhs) {
@@ -101,14 +101,14 @@ namespace ghstl {
 		void operator=(std::basic_string<T> rhs) {
 			this->assign(rhs.c_str(), rhs.length());
 		}
-		constexpr const std::basic_string<T> cpp_str() {
+		constexpr const std::basic_string<T> cpp_str() const {
 			return std::basic_string<T>(this->ptr(), this->length());
 		}
 #endif
-		constexpr const size_t length() {
+		constexpr const size_t length() const {
 			return this->count;
 		}
-		constexpr const size_t size() {
+		constexpr const size_t size() const {
 			return this->length() * sizeof(T);
 		}
 	};
